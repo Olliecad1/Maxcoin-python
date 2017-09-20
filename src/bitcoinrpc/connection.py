@@ -18,32 +18,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-Connect to Bitcoin server via JSON-RPC.
+Connect to Maxcoin server via JSON-RPC.
 """
-from bitcoinrpc.proxy import AuthServiceProxy
-from bitcoinrpc.exceptions import (wrap_exception, BitcoinException,
+from maxcoinrpc.proxy import AuthServiceProxy
+from maxcoinrpc.exceptions import (wrap_exception, MaxcoinException,
                                    WalletPassphraseIncorrect,
                                    WalletAlreadyUnlocked)
-from bitcoinrpc.data import (ServerInfo, AccountInfo, AddressInfo, TransactionInfo,
+from maxcoinrpc.data import (ServerInfo, AccountInfo, AddressInfo, TransactionInfo,
                              AddressValidation, WorkItem, MiningInfo)
 
 
-class BitcoinConnection(object):
+class MaxcoinConnection(object):
     """
-    A BitcoinConnection object defines a connection to a bitcoin server.
+    A MaxcoinConnection object defines a connection to a maxcoin server.
     It is a thin wrapper around a JSON-RPC API connection.
 
     Arguments to constructor:
 
     - *user* -- Authenticate as user.
     - *password* -- Authentication password.
-    - *host* -- Bitcoin JSON-RPC host.
-    - *port* -- Bitcoin JSON-RPC port.
+    - *host* -- Maxcoin JSON-RPC host.
+    - *port* -- Maxcoin JSON-RPC port.
     """
     def __init__(self, user, password, host='localhost', port=8332,
                  use_https=False):
         """
-        Create a new bitcoin server connection.
+        Create a new maxcoin server connection.
         """
         url = 'http{s}://{user}:{password}@{host}:{port}/'.format(
             s='s' if use_https else '',
@@ -53,7 +53,7 @@ class BitcoinConnection(object):
 
     def stop(self):
         """
-        Stop bitcoin server.
+        Stop maxcoin server.
         """
         self.proxy.stop()
 
@@ -80,7 +80,7 @@ class BitcoinConnection(object):
 
     def getblocknumber(self):
         """
-        Returns the block number of the latest block in the longest block chain.
+        Returns the block number of the latest block in the block chain.
         Deprecated. Use getblockcount instead.
         """
         return self.getblockcount()
@@ -126,20 +126,20 @@ class BitcoinConnection(object):
 
     def getinfo(self):
         """
-        Returns an :class:`~bitcoinrpc.data.ServerInfo` object containing various state info.
+        Returns an :class:`~maxcoinrpc.data.ServerInfo` object containing various state info.
         """
         return ServerInfo(**self.proxy.getinfo())
 
     def getmininginfo(self):
         """
-        Returns an :class:`~bitcoinrpc.data.MiningInfo` object containing various
+        Returns an :class:`~maxcoinrpc.data.MiningInfo` object containing various
         mining state info.
         """
         return MiningInfo(**self.proxy.getmininginfo())
 
     def getnewaddress(self, account=None):
         """
-        Returns a new bitcoin address for receiving payments.
+        Returns a new maxcoin address for receiving payments.
 
         Arguments:
 
@@ -154,7 +154,7 @@ class BitcoinConnection(object):
 
     def getaccountaddress(self, account):
         """
-        Returns the current bitcoin address for receiving payments to an account.
+        Returns the current maxcoin address for receiving payments to an account.
 
         Arguments:
 
@@ -163,27 +163,27 @@ class BitcoinConnection(object):
         """
         return self.proxy.getaccountaddress(account)
 
-    def setaccount(self, bitcoinaddress, account):
+    def setaccount(self, maxcoinaddress, account):
         """
         Sets the account associated with the given address.
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to associate.
+        - *maxcoinaddress* -- maxcoin address to associate.
         - *account* -- Account to associate the address to.
 
         """
-        return self.proxy.setaccount(bitcoinaddress, account)
+        return self.proxy.setaccount(maxcoinaddress, account)
 
-    def getaccount(self, bitcoinaddress):
+    def getaccount(self, maxcoinaddress):
         """
         Returns the account associated with the given address.
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to get account for.
+        - *maxcoinaddress* -- maxcoin address to get account for.
         """
-        return self.proxy.getaccount(bitcoinaddress)
+        return self.proxy.getaccount(maxcoinaddress)
 
     def getaddressesbyaccount(self, account):
         """
@@ -195,13 +195,13 @@ class BitcoinConnection(object):
         """
         return self.proxy.getaddressesbyaccount(account)
 
-    def sendtoaddress(self, bitcoinaddress, amount, comment=None, comment_to=None):
+    def sendtoaddress(self, maxcoinaddress, amount, comment=None, comment_to=None):
         """
-        Sends *amount* from the server's available balance to *bitcoinaddress*.
+        Sends *amount* from the server's available balance to *maxcoinaddress*.
 
         Arguments:
 
-        - *bitcoinaddress* -- Bitcoin address to send to.
+        - *maxcoinaddress* -- maxcoin address to send to.
         - *amount* -- Amount to send (float, rounded to the nearest 0.00000001).
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
@@ -209,24 +209,24 @@ class BitcoinConnection(object):
 
         """
         if comment is None:
-            return self.proxy.sendtoaddress(bitcoinaddress, amount)
+            return self.proxy.sendtoaddress(maxcoinaddress, amount)
         elif comment_to is None:
-            return self.proxy.sendtoaddress(bitcoinaddress, amount, comment)
+            return self.proxy.sendtoaddress(maxcoinaddress, amount, comment)
         else:
-            return self.proxy.sendtoaddress(bitcoinaddress, amount, comment, comment_to)
+            return self.proxy.sendtoaddress(maxcoinaddress, amount, comment, comment_to)
 
-    def getreceivedbyaddress(self, bitcoinaddress, minconf=1):
+    def getreceivedbyaddress(self, maxcoinaddress, minconf=1):
         """
-        Returns the total amount received by a bitcoin address in transactions with at least a
+        Returns the total amount received by a maxcoin address in transactions with at least a
         certain number of confirmations.
 
         Arguments:
 
-        - *bitcoinaddress* -- Address to query for total amount.
+        - *maxcoinaddress* -- Address to query for total amount.
 
         - *minconf* -- Number of confirmations to require, defaults to 1.
         """
-        return self.proxy.getreceivedbyaddress(bitcoinaddress, minconf)
+        return self.proxy.getreceivedbyaddress(maxcoinaddress, minconf)
 
     def getreceivedbyaccount(self, account, minconf=1):
         """
@@ -344,7 +344,7 @@ class BitcoinConnection(object):
         """
         Returns a list of addresses.
 
-        Each address is represented with a :class:`~bitcoinrpc.data.AddressInfo` object.
+        Each address is represented with a :class:`~maxcoinrpc.data.AddressInfo` object.
 
         Arguments:
 
@@ -373,7 +373,7 @@ class BitcoinConnection(object):
         """
         Returns a list of accounts.
 
-        Each account is represented with a :class:`~bitcoinrpc.data.AccountInfo` object.
+        Each account is represented with a :class:`~maxcoinrpc.data.AccountInfo` object.
 
         Arguments:
 
@@ -388,7 +388,7 @@ class BitcoinConnection(object):
         """
         Returns a list of the last transactions for an account.
 
-        Each transaction is represented with a :class:`~bitcoinrpc.data.TransactionInfo` object.
+        Each transaction is represented with a :class:`~maxcoinrpc.data.TransactionInfo` object.
 
         Arguments:
 
@@ -418,7 +418,7 @@ class BitcoinConnection(object):
         """
         Validate a bitcoin address and return information for it.
 
-        The information is represented by a :class:`~bitcoinrpc.data.AddressValidation` object.
+        The information is represented by a :class:`~maxcoinrpc.data.AddressValidation` object.
 
         Arguments: -- Address to validate.
 
@@ -464,15 +464,15 @@ class BitcoinConnection(object):
     def sendfrom(self, fromaccount, tobitcoinaddress, amount, minconf=1, comment=None,
                  comment_to=None):
         """
-        Sends amount from account's balance to bitcoinaddress. This method will fail
-        if there is less than amount bitcoins with minconf confirmations in the account's
+        Sends amount from account's balance to maxcoinaddress. This method will fail
+        if there is less than amount maxcoins with minconf confirmations in the account's
         balance (unless account is the empty-string-named default account; it
         behaves like the sendtoaddress method). Returns transaction ID on success.
 
         Arguments:
 
         - *fromaccount* -- Account to send from.
-        - *tobitcoinaddress* -- Bitcoin address to send to.
+        - *tomaxcoinaddress* -- maxcoin address to send to.
         - *amount* -- Amount to send (float, rounded to the nearest 0.01).
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
@@ -480,24 +480,24 @@ class BitcoinConnection(object):
 
         """
         if comment is None:
-            return self.proxy.sendfrom(fromaccount, tobitcoinaddress, amount, minconf)
+            return self.proxy.sendfrom(fromaccount, tomaxcoinaddress, amount, minconf)
         elif comment_to is None:
-            return self.proxy.sendfrom(fromaccount, tobitcoinaddress, amount, minconf, comment)
+            return self.proxy.sendfrom(fromaccount, tomaxcoinaddress, amount, minconf, comment)
         else:
-            return self.proxy.sendfrom(fromaccount, tobitcoinaddress, amount, minconf,
+            return self.proxy.sendfrom(fromaccount, tomaxcoinaddress, amount, minconf,
                                        comment, comment_to)
 
     def sendmany(self, fromaccount, todict, minconf=1, comment=None):
         """
-        Sends specified amounts from account's balance to bitcoinaddresses. This method will fail
-        if there is less than total amount bitcoins with minconf confirmations in the account's
+        Sends specified amounts from account's balance to maxcoinaddresses. This method will fail
+        if there is less than total amount maxcoins with minconf confirmations in the account's
         balance (unless account is the empty-string-named default account; Returns transaction ID
         on success.
 
         Arguments:
 
         - *fromaccount* -- Account to send from.
-        - *todict* -- Dictionary with Bitcoin addresses as keys and amounts as values.
+        - *todict* -- Dictionary with maxcoin addresses as keys and amounts as values.
         - *minconf* -- Minimum number of confirmations required for transferred balance.
         - *comment* -- Comment for transaction.
 
@@ -507,27 +507,27 @@ class BitcoinConnection(object):
         else:
             return self.proxy.sendmany(fromaccount, todict, minconf, comment)
 
-    def verifymessage(self, bitcoinaddress, signature, message):
+    def verifymessage(self, maxcoinaddress, signature, message):
         """
-        Verifies a signature given the bitcoinaddress used to sign,
+        Verifies a signature given the maxcoinaddress used to sign,
         the signature itself, and the message that was signed.
         Returns :const:`True` if the signature is valid, and :const:`False` if it is invalid.
 
         Arguments:
 
-        - *bitcoinaddress* -- the bitcoinaddress used to sign the message
+        - *maxcoinaddress* -- the maxcoinaddress used to sign the message
         - *signature* -- the signature to be verified
         - *message* -- the message that was originally signed
 
         """
-        return self.proxy.verifymessage(bitcoinaddress, signature, message)
+        return self.proxy.verifymessage(maxcoinaddress, signature, message)
 
     def getwork(self, data=None):
         """
         Get work for remote mining, or submit result.
         If data is specified, the server tries to solve the block
         using the provided data and returns :const:`True` if it was successful.
-        If not, the function returns formatted hash data (:class:`~bitcoinrpc.data.WorkItem`)
+        If not, the function returns formatted hash data (:class:`~maxcoinrpc.data.WorkItem`)
         to work on.
 
         Arguments:
@@ -569,13 +569,13 @@ class BitcoinConnection(object):
         - *timeout* -- Time in seconds to keep the wallet unlocked
                        (by keeping the passphrase in memory).
 
-        - *dont_raise* -- instead of raising `~bitcoinrpc.exceptions.WalletPassphraseIncorrect`
+        - *dont_raise* -- instead of raising `~maxcoinrpc.exceptions.WalletPassphraseIncorrect`
                           return False.
         """
         try:
             self.proxy.walletpassphrase(passphrase, timeout)
             return True
-        except BitcoinException as exception:
+        except MaxcoinException as exception:
             if dont_raise:
                 if isinstance(exception, WalletPassphraseIncorrect):
                     return False
@@ -598,13 +598,13 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *dont_raise* -- instead of raising `~bitcoinrpc.exceptions.WalletPassphraseIncorrect`
+        - *dont_raise* -- instead of raising `~maxcoinrpc.exceptions.WalletPassphraseIncorrect`
                           return False.
         """
         try:
             self.proxy.walletpassphrasechange(oldpassphrase, newpassphrase)
             return True
-        except BitcoinException as exception:
+        except MaxcoinException as exception:
             if dont_raise and isinstance(exception, WalletPassphraseIncorrect):
                 return False
             raise exception
@@ -615,7 +615,7 @@ class BitcoinConnection(object):
 
         Arguments:
 
-        - *address* -- Bitcoin address whose private key should be returned.
+        - *address* -- Maxcoin address whose private key should be returned.
         """
         return self.proxy.dumpprivkey(address)
 
@@ -623,7 +623,7 @@ class BitcoinConnection(object):
         """
         Sign messages, returns the signature
 
-        :param address: Bitcoin address used to sign a message
+        :param address: Maxcoin address used to sign a message
         :type address: str or unicode
         :param message: The message to sign
         :type message: str or unicode
@@ -635,7 +635,7 @@ class BitcoinConnection(object):
         """
         Verify a signed message
 
-        :param address: Bitcoin address used to sign a message
+        :param address: Maxcoin address used to sign a message
         :type address: str or unicode
         :param signature: The signature
         :type signature: unicode
