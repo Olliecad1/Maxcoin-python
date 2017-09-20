@@ -416,7 +416,7 @@ class MaxcoinConnection(object):
 
     def validateaddress(self, validateaddress):
         """
-        Validate a bitcoin address and return information for it.
+        Validate a maxcoin address and return information for it.
 
         The information is represented by a :class:`~maxcoinrpc.data.AddressValidation` object.
 
@@ -461,7 +461,7 @@ class MaxcoinConnection(object):
         else:
             return self.proxy.move(fromaccount, toaccount, amount, minconf, comment)
 
-    def sendfrom(self, fromaccount, tobitcoinaddress, amount, minconf=1, comment=None,
+    def sendfrom(self, fromaccount, tomaxcoinaddress, amount, minconf=1, comment=None,
                  comment_to=None):
         """
         Sends amount from account's balance to maxcoinaddress. This method will fail
