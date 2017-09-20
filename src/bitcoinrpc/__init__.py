@@ -18,22 +18,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-bitcoin-python - Easy-to-use Bitcoin API client
+Maxcoin-python - Easy-to-use Maxcoin API client
 """
 
 
 def connect_to_local(filename=None):
     """
-    Connect to default bitcoin instance owned by this user, on this machine.
+    Connect to default Maxcoin instance owned by this user, on this machine.
 
-    Returns a :class:`~bitcoinrpc.connection.BitcoinConnection` object.
+    Returns a :class:`~Maxcoinrpc.connection.MaxcoinConnection` object.
 
     Arguments:
 
         - `filename`: Path to a configuration file in a non-standard location (optional)
     """
-    from bitcoinrpc.connection import BitcoinConnection
-    from bitcoinrpc.config import read_default_config
+    from maxcoinrpc.connection import MaxcoinConnection
+    from maxcoinrpc.config import read_default_config
 
     cfg = read_default_config(filename)
     if cfg is None:
@@ -42,7 +42,7 @@ def connect_to_local(filename=None):
     rpcuser = cfg.get('rpcuser', '')
     rpcpassword = cfg.get('rpcpassword', '')
 
-    return BitcoinConnection(rpcuser, rpcpassword, 'localhost', port)
+    return MaxcoinConnection(rpcuser, rpcpassword, 'localhost', port)
 
 
 def connect_to_remote(user, password, host='localhost', port=8332,
@@ -50,8 +50,8 @@ def connect_to_remote(user, password, host='localhost', port=8332,
     """
     Connect to remote or alternative local bitcoin client instance.
 
-    Returns a :class:`~bitcoinrpc.connection.BitcoinConnection` object.
+    Returns a :class:`~maxcoinrpc.connection.MaxcoinConnection` object.
     """
-    from bitcoinrpc.connection import BitcoinConnection
+    from maxcoinrpc.connection import MaxcoinConnection
 
-    return BitcoinConnection(user, password, host, port, use_https)
+    return MaxcoinConnection(user, password, host, port, use_https)
