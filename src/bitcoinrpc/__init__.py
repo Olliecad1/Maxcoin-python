@@ -48,7 +48,7 @@ def connect_to_local(filename=None):
 def connect_to_remote(user, password, host='localhost', port=8332,
                       use_https=False):
     """
-    Connect to remote or alternative local bitcoin client instance.
+    Connect to remote or alternative local maxcoin client instance.
 
     Returns a :class:`~maxcoinrpc.connection.MaxcoinConnection` object.
     """
