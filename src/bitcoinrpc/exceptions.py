@@ -22,11 +22,11 @@ Exception definitions.
 """
 
 
-class BitcoinException(Exception):
+class MaxcoinException(Exception):
     """
-    Base class for exceptions received from Bitcoin server.
+    Base class for exceptions received from Maxcoin server.
 
-    - *code* -- Error code from ``bitcoind``.
+    - *code* -- Error code from ``maxcoind``.
     """
     # Standard JSON-RPC 2.0 errors
     INVALID_REQUEST  = -32600,
@@ -46,7 +46,7 @@ class BitcoinException(Exception):
     DESERIALIZATION_ERROR       = -22 # Error parsing or validating structure in raw format
 
     # P2P client errors
-    CLIENT_NOT_CONNECTED        = -9  # Bitcoin is not connected
+    CLIENT_NOT_CONNECTED        = -9  # maxcoin is not connected
     CLIENT_IN_INITIAL_DOWNLOAD  = -10 # Still downloading initial blocks
 
     # Wallet errors
@@ -85,40 +85,40 @@ class TransportException(Exception):
 
 
 ##### General application defined errors
-class SafeMode(BitcoinException):
+class SafeMode(MaxcoinException):
     """
-    Operation denied in safe mode (run ``bitcoind`` with ``-disablesafemode``).
+    Operation denied in safe mode (run ``maxcoind`` with ``-disablesafemode``).
     """
 
 
-class JSONTypeError(BitcoinException):
+class JSONTypeError(MaxcoinException):
     """
     Unexpected type was passed as parameter
     """
 InvalidAmount = JSONTypeError  # Backwards compatibility
 
 
-class InvalidAddressOrKey(BitcoinException):
+class InvalidAddressOrKey(MaxcoinException):
     """
     Invalid address or key.
     """
 InvalidTransactionID = InvalidAddressOrKey  # Backwards compatibility
 
 
-class OutOfMemory(BitcoinException):
+class OutOfMemory(MaxcoinException):
     """
     Out of memory during operation.
     """
 
 
-class InvalidParameter(BitcoinException):
+class InvalidParameter(MaxcoinException):
     """
     Invalid parameter provided to RPC call.
     """
 
 
 ##### Client errors
-class ClientException(BitcoinException):
+class ClientException(MaxcoinException):
     """
     P2P network error.
     This exception is never raised but functions as a superclass
@@ -126,20 +126,20 @@ class ClientException(BitcoinException):
     """
 
 
-class NotConnected(ClientException):
+class NotConnected(MaxcoinException):
     """
     Not connected to any peers.
     """
 
 
-class DownloadingBlocks(ClientException):
+class DownloadingBlocks(MaxcoinException):
     """
     Client is still downloading blocks.
     """
 
 
 ##### Wallet errors
-class WalletError(BitcoinException):
+class WalletError(MaxcoinException):
     """
     Unspecified problem with wallet (key not found etc.)
     """
@@ -197,31 +197,30 @@ class WalletAlreadyUnlocked(WalletError):
 # For convenience, we define more specific exception classes
 # for the more common errors.
 _exception_map = {
-    BitcoinException.FORBIDDEN_BY_SAFE_MODE: SafeMode,
-    BitcoinException.TYPE_ERROR: JSONTypeError,
-    BitcoinException.WALLET_ERROR: WalletError,
-    BitcoinException.INVALID_ADDRESS_OR_KEY: InvalidAddressOrKey,
-    BitcoinException.WALLET_INSUFFICIENT_FUNDS: InsufficientFunds,
-    BitcoinException.OUT_OF_MEMORY: OutOfMemory,
-    BitcoinException.INVALID_PARAMETER: InvalidParameter,
-    BitcoinException.CLIENT_NOT_CONNECTED: NotConnected,
-    BitcoinException.CLIENT_IN_INITIAL_DOWNLOAD: DownloadingBlocks,
-    BitcoinException.WALLET_INSUFFICIENT_FUNDS: InsufficientFunds,
-    BitcoinException.WALLET_INVALID_ACCOUNT_NAME: InvalidAccountName,
-    BitcoinException.WALLET_KEYPOOL_RAN_OUT: KeypoolRanOut,
-    BitcoinException.WALLET_UNLOCK_NEEDED: WalletUnlockNeeded,
-    BitcoinException.WALLET_PASSPHRASE_INCORRECT: WalletPassphraseIncorrect,
-    BitcoinException.WALLET_WRONG_ENC_STATE: WalletWrongEncState,
-    BitcoinException.WALLET_ENCRYPTION_FAILED: WalletEncryptionFailed,
-    BitcoinException.WALLET_ALREADY_UNLOCKED: WalletAlreadyUnlocked,
+    MaxcoinException.FORBIDDEN_BY_SAFE_MODE: SafeMode,
+    MaxcoinException.TYPE_ERROR: JSONTypeError,
+    MaxcoinException.WALLET_ERROR: WalletError,
+    MaxcoinException.INVALID_ADDRESS_OR_KEY: InvalidAddressOrKey,
+    MaxcoinException.WALLET_INSUFFICIENT_FUNDS: InsufficientFunds,
+    MaxcoinException.OUT_OF_MEMORY: OutOfMemory,
+    MaxcoinException.INVALID_PARAMETER: InvalidParameter,
+    MaxcoinException.CLIENT_NOT_CONNECTED: NotConnected,
+    MaxcoinException.CLIENT_IN_INITIAL_DOWNLOAD: DownloadingBlocks,
+    MaxcoinException.WALLET_INSUFFICIENT_FUNDS: InsufficientFunds,
+    MaxcoinException.WALLET_INVALID_ACCOUNT_NAME: InvalidAccountName,
+    MaxcoinException.WALLET_KEYPOOL_RAN_OUT: KeypoolRanOut,
+    MaxcoinException.WALLET_UNLOCK_NEEDED: WalletUnlockNeeded,
+    MaxcoinException.WALLET_PASSPHRASE_INCORRECT: WalletPassphraseIncorrect,
+    MaxcoinException.WALLET_WRONG_ENC_STATE: WalletWrongEncState,
+    MaxcoinException.WALLET_ENCRYPTION_FAILED: WalletEncryptionFailed,
+    MaxcoinException.WALLET_ALREADY_UNLOCKED: WalletAlreadyUnlocked,
 }
 
 
 def wrap_exception(error):
     """
-    Convert a JSON error object to a more specific Bitcoin exception.
+    Convert a JSON error object to a more specific Maxcoin exception.
     """
-    # work around to temporarily fix https://github.com/bitcoin/bitcoin/issues/3007
-    if error['code'] == BitcoinException.WALLET_ERROR and error['message'] == u'Insufficient funds':
-        error['code'] = BitcoinException.WALLET_INSUFFICIENT_FUNDS
-    return _exception_map.get(error['code'], BitcoinException)(error)
+    if error['code'] == MaxcoinException.WALLET_ERROR and error['message'] == u'Insufficient funds':
+        error['code'] = MaxcoinException.WALLET_INSUFFICIENT_FUNDS
+    return _exception_map.get(error['code'], MaxcoinException)(error)
